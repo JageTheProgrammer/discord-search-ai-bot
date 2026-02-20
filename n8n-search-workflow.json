@@ -1,0 +1,163 @@
+{
+  "name": "AI Search n8n",
+  "nodes": [
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "DISCORD WEBHOOK URL",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "content",
+              "value": "={{ $json.content }}"
+            }
+          ]
+        }
+      },
+      "name": "Send to Discord",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        -64
+      ],
+      "id": "6c76fe9e-8881-4bd6-96fa-11f3687efe75"
+    },
+    {
+      "parameters": {
+        "modelId": "gpt-oss:120b",
+        "messages": {
+          "values": [
+            {
+              "content": "=Summarize this clearly for Discord:\\n\\n{{$json.text}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Summarize",
+      "type": "@n8n/n8n-nodes-langchain.ollama",
+      "typeVersion": 1,
+      "position": [
+        928,
+        -64
+      ],
+      "id": "6e013038-cb17-4335-9a94-70ceac3964b5",
+      "credentials": {
+        "ollamaApi": {
+          "id": "FtNGM41E4g7Z2ZDj",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const results = items[0].json.organic || [];\n\nif (results.length === 0) {\n  return [{ json: { text: \"No results found.\" } }];\n}\n\nlet text = \"🔎 Top Results:\\n\\n\";\n\nfor (const r of results.slice(0,5)) {\n  text += `**${r.title}**\\n${r.snippet}\\n${r.link}\\n\\n`;\n}\n\nreturn [{ json: { text } }];"
+      },
+      "name": "Format Results",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        768,
+        -64
+      ],
+      "id": "2863c020-4fea-46d1-a32f-0b7b7bffebc4"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://google.serper.dev/search",
+        "jsonParameters": true,
+        "options": {},
+        "bodyParametersJson": "={\n  \"q\": \"={{$json.body.query}}\"\n}",
+        "headerParametersJson": "{\n  \"X-API-KEY\": \"YOUR SERPER API KEY\",\n  \"Content-Type\": \"application/json\"\n}"
+      },
+      "name": "Search Web",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        576,
+        -64
+      ],
+      "id": "4080ef3d-7c9b-42d2-a8c7-c803e8fe09a0",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "discord-search",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        352,
+        -64
+      ],
+      "id": "f3d76e23-0859-4a62-a8d2-d4558eb65df6",
+      "webhookId": "790d7068-72ce-448d-93c1-f448ca8c8ef5"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Send to Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Results": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Web": {
+      "main": [
+        [
+          {
+            "node": "Format Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Search Web",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c7d59c17-c504-4487-9da8-1cc7bf383184",
+  "meta": {
+    "instanceId": "75ba2cbc588f612826fe619e2142046e42fd721943e083e679436bf5f0defeed"
+  },
+  "id": "V1a3OSKPRSlMeum4",
+  "tags": []
+}
