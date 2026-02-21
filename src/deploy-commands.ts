@@ -9,7 +9,7 @@ const commands = [
   searchCommand.toJSON(),
 ];
 
-console.log(`📊 Total commands: ${commands.length}`); // Should show 100
+console.log(`📊 Total commands: ${commands.length}`); 
 
 const clientId = process.env.CLIENT_ID!;
 const token = process.env.DISCORD_TOKEN!;

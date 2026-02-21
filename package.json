@@ -1,7 +1,7 @@
 {
   "name": "discordbot",
   "version": "1.0.0",
-  "description": "",
+  "description": "A powerful Discord bot that lets users search the web using a slash command.  \r It sends queries to an **n8n webhook**, scrapes Google results via **Serper API**, uses AI to analyze them, and returns a summarized response back to Discord.",
   "main": "index.js",
   "scripts": {
     "build": "tsc",
@@ -17,10 +17,12 @@
     "@discordjs/builders": "^1.3.0",
     "@discordjs/rest": "^0.4.1",
     "@discordjs/voice": "^0.19.0",
+    "axios": "^1.13.5",
     "better-sqlite3": "^12.6.2",
     "discord-api-types": "^0.37.40",
     "discord.js": "^14.25.1",
     "dotenv": "^17.3.1",
+    "express": "^5.2.1",
     "ffmpeg-static": "^5.3.0",
     "groq-sdk": "^0.37.0",
     "libsodium-wrappers": "^0.8.2",
@@ -34,12 +36,21 @@
   "devDependencies": {
     "@types/axios": "^0.9.36",
     "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6",
     "@types/libsodium-wrappers": "^0.7.14",
-    "@types/node": "^25.2.3",
+    "@types/node": "^25.3.0",
     "@types/node-fetch": "^2.6.13",
     "@types/systeminformation": "^3.23.1",
     "@types/yt-search": "^2.10.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JageTheProgrammer/discord-search-ai-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/JageTheProgrammer/discord-search-ai-bot/issues"
+  },
+  "homepage": "https://github.com/JageTheProgrammer/discord-search-ai-bot#readme"
 }

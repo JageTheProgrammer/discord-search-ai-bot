@@ -1,26 +1,44 @@
-# 📘 Discord AI Search Bot + n8n
+# 📘 Discord AI Search Bot (Local AI Version)
 
 A powerful Discord bot that lets users search the web using a slash command.  
-It sends queries to an **n8n webhook**, scrapes Google results via **Serper API**, uses AI to analyze them, and returns a summarized response back to Discord.
+It performs a real-time Google search via **Serper API**, summarizes the results using **Ollama Cloud (or local LLM)**, and replies directly in Discord.
+
+No n8n.  
+No external automation tools.  
+Fully controlled inside your bot.
 
 ---
 
 ## 🚀 Features
 
-- ✨ `/search <query>` — Ask anything
-- 🌐 Real-time Google search results
-- 🤖 AI-powered summarization
-- 🔁 Automated workflow via n8n
-- 📩 Sends responses back to Discord
-- ⚡ Built with Discord.js + TypeScript
+- ✨ `/search <query>` — Ask anything instantly  
+- 🌐 Real-time Google search results (Serper API)  
+- 🤖 AI-powered summarization (Ollama Cloud or local model)  
+- ⚡ Fast responses with deferred replies  
+- 🔒 Fully self-hosted logic (no workflow engines)  
+- 🧠 Built with Discord.js + TypeScript  
+- 🖥 Runs locally or on VPS  
 
 ---
 
 ## 🏗 Architecture Overview
-User → Discord Slash Command → Bot (Discord.js)
-→ n8n Webhook → Serper API (Google Search)
-→ AI Summarization → Discord Webhook Response
 
+
+User
+↓
+Discord Slash Command
+↓
+Bot (Discord.js + TypeScript)
+↓
+Serper API (Google Search)
+↓
+Ollama Cloud (AI Summary)
+↓
+Discord Response
+
+
+Everything happens inside your bot.  
+No webhooks. No n8n. No automation middle-layer.
 
 ---
 
@@ -28,30 +46,12 @@ User → Discord Slash Command → Bot (Discord.js)
 
 | Technology | Purpose |
 |------------|----------|
-| **Discord.js** | Discord bot framework |
-| **TypeScript** | Static typing |
-| **n8n** | Workflow automation |
+| **Discord.js v14+** | Discord bot framework |
+| **TypeScript** | Type safety |
 | **Serper API** | Google search results |
-| **Ollama / LLM** | AI summarization |
+| **Ollama Cloud / Local Ollama** | AI summarization |
 | **Axios** | HTTP requests |
-
----
-
-## 📁 Project Structure
-.
-├── src/
-│ ├── commands/
-│ │ ├── search.ts
-│ │ └── ...
-│ ├── events/
-│ ├── deploy-commands.ts
-│ └── index.ts
-├── workflows/
-│ └── n8n-search-workflow.json
-├── .env
-├── package.json
-└── README.md
-
+| **dotenv** | Environment configuration |
 
 ---
 
@@ -60,53 +60,82 @@ User → Discord Slash Command → Bot (Discord.js)
 ## 1️⃣ Clone the Repository
 
 ```bash
-git clone https://github.com/jagetheprogrammer/discord-search-ai-bot.git
-cd discord-search-ai-bot
-
+git clone https://github.com/yourusername/discord-ai-search-bot.git
+cd discord-ai-search-bot
 2️⃣ Install Dependencies
 npm install
-npm run build ( after editing commands/search.ts config top your own n8n url. )
-
 3️⃣ Configure Environment Variables
 
-Edit a .env to your own.
+Create a .env file:
 
-⚙️ n8n Setup ( create free 14d trial on https://n8n.io/)
-1️⃣ Import Workflow
+DISCORD_TOKEN=your_discord_bot_token
+SERPER_API_KEY=your_serper_api_key
+OLLAMA_API_KEY=your_ollama_cloud_api_key
+OLLAMA_BASE_URL=https://api.ollama.com
 
-Inside your n8n instance:
+If using local Ollama instead of cloud:
 
-Go to Workflows
+OLLAMA_URL=http://localhost:11434/api/generate
+4️⃣ Build & Run
+npm run build
+node dist/index.js
 
-Click Import
+Or with development mode:
 
-Upload: workflows/n8n-search-workflow.json
+npm run dev
+🔑 Required API Keys
+🔎 Serper API
 
-🔑 Serper API
+Generate at: https://serper.dev/
 
-In the HTTP Request node: change the api key to your own one. you can generate one at : https://serper.dev/
+Used for Google search results (titles, snippets, and links)
 
-🔗 Discord Webhook
+🤖 Ollama Cloud API Key
 
-Replace the webhook URL with: your own webhook url. 
+Get from: https://ollama.com/
 
-3️⃣ Activate the Workflow
-
-Enable the Webhook node
-
-Ensure JSON parameters are enabled
-
-Activate the workflow
-
-Publish the workflow 
+Used for AI summarization of search results
 
 💬 Usage
 
-Once deployed, use the slash command:
+Once the bot is online, use:
 
-/search bill gates
+/search artificial intelligence news
 Example Response
-🔎 Searching...
+🔎 Top Results:
+
+Artificial intelligence continues to grow rapidly...
+Major tech companies are investing heavily...
 
 🤖 Summary:
-Bill Gates is a technology entrepreneur and philanthropist...
+AI development is accelerating across industries...
+🖥 VPS Deployment (Optional)
+
+Install PM2:
+
+npm install -g pm2
+pm2 start dist/index.js --name ai-search-bot
+pm2 save
+pm2 startup
+🔥 Why This Version Is Better Than n8n
+Old (n8n Version)	New (Local Version)
+Required external workflow	Fully integrated
+Webhook complexity	Direct slash command
+Harder to debug	Simple TypeScript code
+Slower (extra hop)	Faster response
+External dependency	Fully controlled
+🚀 Future Improvements (Optional)
+
+Streaming AI responses live in Discord
+
+Rich embeds with clickable sources
+
+Caching repeated searches
+
+Rate limiting per user
+
+Multi-guild optimization
+
+Docker container deployment
+
+Memory-based conversation mode
